@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>EsauTech Admin</title>
+<meta name="theme-color" content="#d3121f">
+<style>
+:root{--red:#d3121f;--red2:#a80d18;--ink:#1d1d1f;--mute:#6b6b70;--line:#e4e4e7;--bg:#f3f3f5;--card:#fff;--ok:#12813a;--r:8px}
+@media(prefers-color-scheme:dark){:root{--ink:#f2f2f4;--mute:#a0a0a8;--line:#34343a;--bg:#161618;--card:#212124}}
+*{box-sizing:border-box;margin:0}
+body{font:15px/1.45 "Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;background:var(--bg);color:var(--ink);padding-bottom:env(safe-area-inset-bottom)}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer;touch-action:manipulation}
+:focus-visible{outline:3px solid #ffb400;outline-offset:2px}
+.hide{display:none!important}
+.wrap{max-width:1200px;margin:0 auto;padding:0 clamp(12px,3vw,24px)}
+header{background:var(--red);color:#fff;padding-top:env(safe-area-inset-top);position:sticky;top:0;z-index:20}
+header .wrap{display:flex;align-items:center;gap:14px;min-height:60px}
+.logo{font-size:22px;font-weight:800}.logo small{font-weight:500;font-size:13px;opacity:.85;margin-left:6px}
+header button{margin-left:auto;background:rgba(255,255,255,.18);border:0;color:#fff;border-radius:6px;padding:9px 14px}
+.login{max-width:400px;margin:12vh auto 0;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:26px}
+.login h1{font-size:22px;margin-bottom:4px}
+label{display:block;font-size:13px;font-weight:600;margin:12px 0 4px}
+.f{width:100%;padding:12px;border:1px solid var(--line);border-radius:var(--r);background:var(--card);font-size:16px}
+.btn{background:var(--red);color:#fff;border:0;border-radius:var(--r);padding:12px 18px;font-weight:700}
+.btn:hover{background:var(--red2)}
+.btn.full{width:100%;margin-top:16px;padding:14px}
+.btn.ok{background:var(--ok)}
+.btn.gray{background:none;color:var(--ink);border:1px solid var(--line);font-weight:500}
+.btn:disabled{opacity:.6;cursor:wait}
+.err{color:var(--red);font-size:13.5px;min-height:20px;margin-top:8px}
+.hint{font-size:12.5px;color:var(--mute)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:18px 0}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px}
+.stat b{display:block;font-size:22px}.stat span{font-size:13px;color:var(--mute)}
+.tabs{display:flex;gap:8px;border-bottom:1px solid var(--line);margin-bottom:16px}
+.tabs button{background:none;border:0;padding:12px 18px;font-weight:600;color:var(--mute);border-bottom:3px solid transparent}
+.tabs button.on{color:var(--red);border-color:var(--red)}
+.bar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;align-items:center}
+.bar .f{flex:1;min-width:180px;width:auto}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chips button{border:1px solid var(--line);background:var(--card);border-radius:20px;padding:8px 15px}
+.chips button.on{background:var(--red);color:#fff;border-color:var(--red)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:12px;display:flex;flex-direction:column;gap:8px}
+.prod{display:grid;grid-template-columns:76px 1fr;gap:12px}
+.pic{width:76px;height:76px;border-radius:6px;background:#f0f0f3;display:grid;place-items:center;font-size:38px;overflow:hidden}
+@media(prefers-color-scheme:dark){.pic{background:#2c2c30}}
+.pic img{width:100%;height:100%;object-fit:contain}
+.prod h3{font-size:14.5px;overflow-wrap:anywhere}
+.price{color:var(--red);font-weight:800}
+.tag{font-size:12px;padding:2px 9px;border-radius:10px;background:#ffe8b0;color:#6a4700;white-space:nowrap}
+.tag.paid{background:#cdeed7;color:#0b5a26}.tag.failed{background:#ffd9d9;color:#8a0f0f}.tag.low{background:#ffe8b0}
+.row{display:flex;gap:8px}.row .btn{flex:1;padding:10px}
+.ord .top{display:flex;justify-content:space-between;gap:8px;align-items:center}
+.ord a{color:var(--red)}
+.warn{background:#fff3cd;color:#664d03;border-radius:6px;padding:8px 10px;font-size:13px}
+.empty{grid-column:1/-1;text-align:center;padding:44px 10px;color:var(--mute)}
+.veil{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:40;display:none}
+.veil.on{display:block}
+.sheet{position:fixed;top:0;right:0;bottom:0;width:min(480px,100%);background:var(--card);z-index:50;display:none;flex-direction:column}
+.sheet.on{display:flex}
+.sh{background:var(--red);color:#fff;padding:14px 16px;padding-top:max(14px,env(safe-area-inset-top));display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:18px}
+.sh button{background:none;border:0;color:#fff;font-size:28px;width:44px;height:44px}
+.sb{flex:1;overflow:auto;padding:16px}
+.sf{border-top:1px solid var(--line);padding:12px 16px;padding-bottom:max(12px,env(safe-area-inset-bottom));display:flex;gap:10px}
+.sf .btn{flex:1}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.prev{width:100px;height:100px;margin-top:8px}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));transform:translateX(-50%);background:#222;color:#fff;padding:11px 18px;border-radius:24px;z-index:70;opacity:0;pointer-events:none;transition:opacity .2s;max-width:90%;text-align:center}
+.toast.on{opacity:1}
+@media(max-width:800px){.stats{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){
+ .sheet{top:auto;left:0;width:100%;max-height:94dvh;border-radius:18px 18px 0 0}.sh{border-radius:18px 18px 0 0}
+ .grid{grid-template-columns:1fr}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<header><div class="wrap"><div class="logo">EsauTech<small>Admin</small></div><button id="out" class="hide">Log out</button></div></header>
+
+<main class="wrap">
+ <!-- Login -->
+ <form class="login" id="lg" autocomplete="off">
+  <h1>Admin login</h1><p class="hint">Only the store owner can manage products and orders.</p>
+  <div id="srvBox" class="hide"><label for="srv">Server address</label><input class="f" id="srv" type="url" placeholder="https://esautech-api.onrender.com"><div class="hint">Your Render address. Saved on this device.</div></div>
+  <label for="pw">Password</label><input class="f" id="pw" type="password" autocomplete="current-password">
+  <div class="err" id="le" role="alert"></div>
+  <button class="btn full" id="lb">Log in</button>
+  <p class="hint" style="margin-top:12px">If the server was idle, the first login can take up to a minute.</p>
+ </form>
+
+ <!-- App -->
+ <section id="app" class="hide">
+  <div class="stats" id="stats"></div>
+  <div class="tabs" role="tablist"><button id="tP" class="on">Products</button><button id="tO">Orders</button></div>
+
+  <div id="pP">
+   <div class="bar"><input class="f" id="ps" type="search" placeholder="Search products" aria-label="Search products"><button class="btn" id="add">+ Add product</button></div>
+   <div class="grid" id="pg"></div>
+  </div>
+  <div id="pO" class="hide">
+   <div class="bar"><div class="chips" id="oc"></div><button class="btn gray" id="orf">Refresh</button></div>
+   <div class="grid" id="og"></div>
+  </div>
+ </section>
+</main>
+
+<div class="veil" id="veil"></div>
+<aside class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="Product form">
+ <div class="sh"><span id="st">Add product</span><button id="sx" aria-label="Close">&times;</button></div>
+ <div class="sb">
+  <label for="fn">Product name</label><input class="f" id="fn" maxlength="120">
+  <div class="two"><div><label for="fb">Brand</label><input class="f" id="fb" maxlength="60"></div><div><label for="fc">Category</label><input class="f" id="fc" list="cats" maxlength="60" placeholder="Phones &amp; Tablets"></div></div>
+  <datalist id="cats"></datalist>
+  <div class="two"><div><label for="fp">Price (KES)</label><input class="f" id="fp" type="number" inputmode="numeric" min="1" step="1"></div><div><label for="fq">Quantity in stock</label><input class="f" id="fq" type="number" inputmode="numeric" min="0" step="1"></div></div>
+  <label for="ff">Photo</label><input class="f" id="ff" type="file" accept="image/*">
+  <div class="hint">Or paste an image link:</div><input class="f" id="fi" type="url" placeholder="https://...">
+  <div class="pic prev" id="pv"></div>
+  <label for="fe">Icon (shown when there is no photo)</label><input class="f" id="fe" maxlength="4" placeholder="📱">
+  <div class="err" id="fe2" role="alert"></div>
+ </div>
+ <div class="sf"><button class="btn gray" id="sc">Cancel</button><button class="btn ok" id="ss">Save product</button></div>
+</aside>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+/* Your Render address. Leave empty to type it on the login screen instead. */
+const API_URL="";
+
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const KES=n=>"KES "+Number(n).toLocaleString("en-KE");
+const DEFAULT_CATS=["Phones & Tablets","TVs & Audio","Computing","Home Appliances","Accessories"];
+const base=()=>(API_URL||localStorage.getItem("et_api")||"").replace(/\/+$/,"");
+let token=sessionStorage.getItem("et_admin")||"",products=[],orders=[],ofilter="paid",editing=null,img="";
+
+let tt;function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("on");clearTimeout(tt);tt=setTimeout(()=>t.classList.remove("on"),2600)}
+async function api(path,opt={}){
+  let r,d={};
+  try{r=await fetch(base()+path,{...opt,headers:{"Content-Type":"application/json",...(token?{Authorization:"Bearer "+token}:{})}})}
+  catch{throw new Error("Cannot reach the server. Check the address and your internet.")}
+  try{d=await r.json()}catch{}
+  if(r.status===401&&token){logout("Session ended. Please log in again.");throw new Error("Session ended")}
+  if(!r.ok)throw new Error(d.message||"Request failed ("+r.status+")");
+  return d;
+}
+
+/* ---------- login ---------- */
+function showLogin(msg){token="";sessionStorage.removeItem("et_admin");$("#app").classList.add("hide");$("#out").classList.add("hide");$("#lg").classList.remove("hide");$("#srvBox").classList.toggle("hide",!!API_URL);$("#srv").value=localStorage.getItem("et_api")||"";$("#pw").value="";$("#le").textContent=msg||""}
+function logout(msg){showLogin(msg)}
+$("#out").onclick=()=>logout();
+$("#lg").addEventListener("submit",async e=>{
+  e.preventDefault();const le=$("#le"),b=$("#lb");
+  if(!API_URL){const v=$("#srv").value.trim().replace(/\/+$/,"");if(!/^https?:\/\//.test(v))return le.textContent="Enter your server address, starting with https://";localStorage.setItem("et_api",v)}
+  if(!$("#pw").value)return le.textContent="Enter the password.";
+  le.textContent="";b.disabled=true;b.textContent="Connecting...";
+  try{const d=await api("/api/admin/login",{method:"POST",body:JSON.stringify({password:$("#pw").value})});token=d.token;sessionStorage.setItem("et_admin",token);await enter()}
+  catch(x){le.textContent=x.message}
+  b.disabled=false;b.textContent="Log in";
+});
+async function enter(){
+  $("#lg").classList.add("hide");$("#app").classList.remove("hide");$("#out").classList.remove("hide");
+  await Promise.all([loadProducts(),loadOrders()]);
+}
+
+/* ---------- tabs ---------- */
+function tab(o){$("#tP").classList.toggle("on",!o);$("#tO").classList.toggle("on",o);$("#pP").classList.toggle("hide",o);$("#pO").classList.toggle("hide",!o)}
+$("#tP").onclick=()=>tab(false);$("#tO").onclick=()=>tab(true);
+
+/* ---------- stats ---------- */
+function stats(){
+  const paid=orders.filter(o=>o.status==="paid"),rev=paid.reduce((s,o)=>s+o.total,0);
+  const todo=paid.filter(o=>o.fulfilment==="new"||o.fulfilment==="processing").length;
+  const low=products.filter(p=>p.stock<=5).length;
+  $("#stats").innerHTML=`<div class="stat"><b>${KES(rev)}</b><span>Paid sales</span></div><div class="stat"><b>${paid.length}</b><span>Paid orders</span></div><div class="stat"><b>${todo}</b><span>To deliver</span></div><div class="stat"><b>${low}</b><span>Low or out of stock</span></div>`;
+}
+
+/* ---------- products ---------- */
+async function loadProducts(){
+  try{products=await api("/api/admin/products");renderProducts();stats()}catch(e){toast(e.message)}
+}
+function pic(p){return p.image?`<img src="${esc(p.image)}" alt="" onerror="this.parentNode.textContent='${esc(p.emoji||"📦")}'">`:esc(p.emoji||"📦")}
+function renderProducts(){
+  const s=$("#ps").value.trim().toLowerCase();
+  const l=products.filter(p=>!s||(p.name+" "+p.brand+" "+p.cat).toLowerCase().includes(s));
+  const cats=[...new Set([...DEFAULT_CATS,...products.map(p=>p.cat)])];
+  $("#cats").innerHTML=cats.map(c=>`<option value="${esc(c)}">`).join("");
+  $("#pg").innerHTML=l.length?l.map(p=>`<div class="card"><div class="prod"><div class="pic">${pic(p)}</div><div><h3>${esc(p.name)}</h3><div class="hint">${esc(p.brand||"")} ${p.brand?"·":""} ${esc(p.cat)}</div><div class="price">${KES(p.price)}</div><span class="tag ${p.stock<=5?"low":"paid"}">${p.stock<=0?"Out of stock":p.stock+" in stock"}</span></div></div><div class="row"><button class="btn gray" data-e="${p.id}">Edit</button><button class="btn gray" data-d="${p.id}" style="color:var(--red)">Delete</button></div></div>`).join(""):'<div class="empty"><b>No products yet.</b><br>Tap "Add product" to upload your first one.</div>';
+}
+$("#ps").oninput=renderProducts;
+$("#pg").addEventListener("click",async e=>{
+  const ed=e.target.closest("[data-e]"),de=e.target.closest("[data-d]");
+  if(ed)openForm(products.find(p=>p.id===+ed.dataset.e));
+  if(de){const p=products.find(x=>x.id===+de.dataset.d);
+    if(!confirm('Delete "'+p.name+'"? This cannot be undone.'))return;
+    try{await api("/api/admin/products/"+p.id,{method:"DELETE"});toast("Deleted");loadProducts()}catch(x){toast(x.message)}}
+});
+
+/* ---------- product form ---------- */
+function openForm(p){
+  editing=p||null;img=p?p.image||"":"";
+  $("#st").textContent=p?"Edit product":"Add product";
+  $("#fn").value=p?.name||"";$("#fb").value=p?.brand||"";$("#fc").value=p?.cat||"";
+  $("#fp").value=p?.price??"";$("#fq").value=p?.stock??"";$("#fe").value=p?.emoji||"";$("#ff").value="";
+  $("#fi").value=img.startsWith("http")?img:"";$("#fe2").textContent="";
+  preview();$("#veil").classList.add("on");$("#sheet").classList.add("on");
+}
+function closeForm(){$("#veil").classList.remove("on");$("#sheet").classList.remove("on")}
+function preview(){$("#pv").innerHTML=img?`<img src="${esc(img)}" alt="">`:esc($("#fe").value||"📦")}
+$("#add").onclick=()=>openForm();$("#sx").onclick=$("#sc").onclick=closeForm;$("#veil").onclick=closeForm;
+addEventListener("keydown",e=>{if(e.key==="Escape")closeForm()});
+$("#fe").oninput=preview;
+$("#fi").oninput=e=>{img=e.target.value.trim();$("#ff").value="";preview()};
+function shrink(file){return new Promise((res,rej)=>{const im=new Image(),u=URL.createObjectURL(file);
+  im.onload=()=>{const k=Math.min(1,700/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);
+    const x=c.getContext("2d");x.fillStyle="#fff";x.fillRect(0,0,c.width,c.height);x.drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);res(c.toDataURL("image/jpeg",.75))};
+  im.onerror=()=>rej(new Error("Could not read that image"));im.src=u})}
+$("#ff").onchange=async e=>{const f=e.target.files[0];if(!f)return;
+  try{img=await shrink(f);$("#fi").value="";preview()}catch(x){$("#fe2").textContent=x.message}};
+$("#ss").onclick=async()=>{
+  const er=$("#fe2"),b=$("#ss");er.textContent="";
+  const body={name:$("#fn").value.trim(),brand:$("#fb").value.trim(),cat:$("#fc").value.trim(),price:$("#fp").value,stock:$("#fq").value,image:img,emoji:$("#fe").value.trim()};
+  if(body.name.length<2)return er.textContent="Enter the product name.";
+  if(!body.cat)return er.textContent="Enter or choose a category.";
+  if(!(parseInt(body.price,10)>=1))return er.textContent="Enter the price in KES.";
+  if(!(parseInt(body.stock,10)>=0))return er.textContent="Enter the quantity in stock.";
+  b.disabled=true;b.textContent="Saving...";
+  try{await api(editing?"/api/admin/products/"+editing.id:"/api/admin/products",{method:editing?"PUT":"POST",body:JSON.stringify(body)});
+    toast(editing?"Product updated":"Product added");closeForm();loadProducts()}
+  catch(x){er.textContent=x.message}
+  b.disabled=false;b.textContent="Save product";
+};
+
+/* ---------- orders ---------- */
+const FILTERS=[["paid","Paid"],["pending","Pending"],["failed","Failed"],["review","Review"],["","All"]];
+async function loadOrders(){
+  try{orders=await api("/api/admin/orders");renderOrders();stats()}catch(e){toast(e.message)}
+}
+function renderOrders(){
+  $("#oc").innerHTML=FILTERS.map(([v,l])=>`<button data-f="${v}" class="${ofilter===v?"on":""}">${l}</button>`).join("");
+  const l=orders.filter(o=>!ofilter||o.status===ofilter);
+  $("#og").innerHTML=l.length?l.map(o=>{
+    const items=(Array.isArray(o.items)?o.items:[]).map(i=>esc(i.name)+" × "+i.qty).join("<br>");
+    return `<div class="card ord"><div class="top"><b>#${esc(o.id)}</b><span class="tag ${o.status==="paid"?"paid":o.status==="failed"?"failed":""}">${esc(o.status)}</span></div>
+    <div class="hint">${new Date(o.created_at).toLocaleString("en-KE")}</div>
+    <div><b>${esc(o.customer)}</b><br><a href="tel:+${esc(o.phone)}">0${esc(String(o.phone).slice(3))}</a><br>${esc(o.location)}</div>
+    <div>${items}</div><div class="price">${KES(o.total)}</div>
+    ${o.mpesa_receipt?`<div class="hint">M-Pesa receipt: <b>${esc(o.mpesa_receipt)}</b></div>`:""}
+    ${o.message&&o.status!=="paid"?`<div class="hint">${esc(o.message)}</div>`:""}
+    ${o.stock_issue?'<div class="warn">Stock ran short when this was paid. Check availability or refund the customer.</div>':""}
+    ${o.status==="paid"?`<select class="f" data-o="${esc(o.id)}" aria-label="Delivery status">${["new","processing","delivered","cancelled"].map(s=>`<option value="${s}" ${o.fulfilment===s?"selected":""}>${s[0].toUpperCase()+s.slice(1)}</option>`).join("")}</select>`:""}</div>`}).join(""):'<div class="empty">No orders here yet.</div>';
+}
+$("#oc").addEventListener("click",e=>{const b=e.target.closest("[data-f]");if(b){ofilter=b.dataset.f;renderOrders()}});
+$("#orf").onclick=()=>{loadOrders();loadProducts()};
+$("#og").addEventListener("change",async e=>{
+  const s=e.target.closest("[data-o]");if(!s)return;
+  try{await api("/api/admin/orders/"+s.dataset.o,{method:"PATCH",body:JSON.stringify({fulfilment:s.value})});toast("Order updated");loadOrders()}catch(x){toast(x.message)}
+});
+
+/* ---------- start ---------- */
+if(token&&base()){$("#lg").classList.add("hide");enter().catch(()=>showLogin())}else showLogin();
+</script>
+</body>
+</html>
